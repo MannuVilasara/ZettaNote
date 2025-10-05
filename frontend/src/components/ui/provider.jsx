@@ -1,5 +1,3 @@
-import * as React from "react";
-import { ThemeContextProvider } from "./ThemeContext";
 import * as React from 'react';
 import { ThemeContextProvider } from './ThemeContext';
 
