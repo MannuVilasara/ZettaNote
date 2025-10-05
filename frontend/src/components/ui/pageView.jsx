@@ -1,24 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { 
-    Container, 
-    Typography, 
-    IconButton, 
-    Box, 
-    Paper, 
-    CircularProgress,
-    useTheme,
-    useMediaQuery,
-    Tooltip,
-    Fade
-} from "@mui/material";
-import SaveIcon from "@mui/icons-material/Save";
-import { API_URL } from "../../config";
-import ReactMarkdown from "react-markdown";
-import SharePageButton from "./sharePageButton";
-import { FaTrashCan } from "react-icons/fa6";
-import { showToast } from "../../utils/toast";
-import RichMarkdownEditor from "./RichMarkdownEditor";
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Container,
   Typography,
@@ -37,6 +17,7 @@ import ReactMarkdown from 'react-markdown';
 import SharePageButton from './sharePageButton';
 import { FaTrashCan } from 'react-icons/fa6';
 import { showToast } from '../../utils/toast';
+import RichMarkdownEditor from './RichMarkdownEditor';
 
 // Always normalize page id for backend requests
 const normalizePage = (page) => ({
@@ -45,21 +26,12 @@ const normalizePage = (page) => ({
   content: page?.pageData,
 });
 
-export default function PageView({ page }) {
-    const normalizedPage = normalizePage(page);
-    const [content, setContent] = useState("");
-    const [editing, setEditing] = useState(true);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 export default function PageView({ page, onPageDeleted }) {
   const normalizedPage = normalizePage(page);
   const [content, setContent] = useState('');
   const [editing, setEditing] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const textareaRef = useRef(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -255,96 +227,6 @@ export default function PageView({ page, onPageDeleted }) {
             </Paper>
           )}
 
-                    {/* Content Section */}
-                    <Paper
-                        elevation={0}
-                        sx={{
-                            minHeight: { xs: "70vh", md: "75vh" },
-                            border: `1px solid ${theme.palette.divider}`,
-                            borderRadius: 2,
-                            background: theme.palette.mode === 'dark'
-                                ? 'rgba(30,30,30,0.4)'
-                                : 'rgba(255,255,255,0.9)',
-                            backdropFilter: 'blur(10px)',
-                            position: 'relative',
-                            overflow: 'hidden',
-                            transition: 'all 0.3s ease',
-                            '&:hover': {
-                                boxShadow: theme.shadows[4]
-                            }
-                        }}
-                        onClick={() => setEditing(true)}
-                    >
-                        {loading ? (
-                            <Box 
-                                display="flex" 
-                                justifyContent="center" 
-                                alignItems="center" 
-                                minHeight="70vh"
-                            >
-                                <CircularProgress size={60} thickness={4} />
-                            </Box>
-                        ) : editing ? (
-                            <Box>
-                                <RichMarkdownEditor
-                                    content={content}
-                                    onChange={setContent}
-                                    placeholder="Start writing your thoughts..."
-                                    onBlur={() => setEditing(false)}
-                                />
-                            </Box>
-                        ) : (
-                            <Box 
-                                onClick={() => setEditing(true)}
-                                sx={{ 
-                                    p: { xs: 2.5, md: 4 },
-                                    minHeight: { xs: "70vh", md: "75vh" },
-                                    cursor: 'text',
-                                    '& p': {
-                                        fontSize: { xs: '16px', md: '18px' },
-                                        lineHeight: 1.7,
-                                        mb: 2
-                                    },
-                                    '& h1, & h2, & h3, & h4, & h5, & h6': {
-                                        fontWeight: 600,
-                                        mb: 2,
-                                        mt: 3
-                                    },
-                                    '& code': {
-                                        background: theme.palette.action.hover,
-                                        padding: '2px 6px',
-                                        borderRadius: '4px',
-                                        fontSize: '0.9em'
-                                    },
-                                    '& pre': {
-                                        background: theme.palette.action.hover,
-                                        padding: '16px',
-                                        borderRadius: '8px',
-                                        overflow: 'auto'
-                                    }
-                                }}
-                            >
-                                {content ? (
-                                    <ReactMarkdown>{content}</ReactMarkdown>
-                                ) : (
-                                    <Typography 
-                                        variant="body1" 
-                                        sx={{ 
-                                            fontStyle: 'italic',
-                                            color: theme.palette.text.secondary,
-                                            fontSize: { xs: '16px', md: '18px' }
-                                        }}
-                                    >
-                                        Click to start writing...
-                                    </Typography>
-                                )}
-                            </Box>
-                        )}
-                    </Paper>
-                </Box>
-            </Fade>
-        </Container>
-    );
           {/* Content Section */}
           <Paper
             elevation={0}
@@ -369,27 +251,14 @@ export default function PageView({ page, onPageDeleted }) {
                 <CircularProgress size={60} thickness={4} />
               </Box>
             ) : editing ? (
-              <textarea
-                ref={textareaRef}
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                onBlur={() => setEditing(false)}
-                style={{
-                  width: '100%',
-                  minHeight: isMobile ? '70vh' : '75vh',
-                  border: 'none',
-                  outline: 'none',
-                  background: 'transparent',
-                  fontSize: isMobile ? '16px' : '18px',
-                  fontFamily: "'Inter', 'Segoe UI', sans-serif",
-                  resize: 'none',
-                  padding: isMobile ? '20px' : '32px',
-                  lineHeight: 1.7,
-                  color: theme.palette.text.primary,
-                }}
-                autoFocus
-                placeholder="Start writing your thoughts..."
-              />
+              <Box>
+                <RichMarkdownEditor
+                  content={content}
+                  onChange={setContent}
+                  placeholder="Start writing your thoughts..."
+                  onBlur={() => setEditing(false)}
+                />
+              </Box>
             ) : (
               <Box
                 onClick={() => setEditing(true)}
