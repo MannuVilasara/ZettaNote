@@ -1,10 +1,3 @@
-import React, { useState, useRef, useEffect } from "react";
-import {
-    Container,
-    Typography,
-    IconButton,
-    Box,
-    Paper,
 import React, { useState, useEffect } from "react";
 import { 
     Container, 
@@ -24,7 +17,6 @@ import ReactMarkdown from "react-markdown";
 import SharePageButton from "./sharePageButton";
 import { FaTrashCan } from "react-icons/fa6";
 import { showToast } from "../../utils/toast";
-import { useSavePageOnChange } from "../../hooks/useSavePageOnChange";
 import RichMarkdownEditor from "./RichMarkdownEditor";
 import React, { useState, useRef, useEffect } from 'react';
 import {
@@ -61,91 +53,6 @@ export default function PageView({ page }) {
     const [error, setError] = useState("");
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-    const { savePage, saveError, isSaving, isSaved } = useSavePageOnChange(1000);
-
-    useEffect(() => {
-        if (!normalizedPage.id) return;
-        setLoading(true);
-        setError("");
-        const fetchPage = async () => {
-            try {
-                const token = localStorage.getItem("token");
-                const res = await fetch(API_URL + "/api/pages/getpage", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ token, pageId: normalizedPage.id }),
-                });
-                const data = await res.json();
-                if (res.ok && data.Page) {
-                    setContent(data.Page.pageData || "");
-                } else {
-                    setError(data.message || "Failed to load page");
-                }
-            } catch (err) {
-                setError("Failed to load page");
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchPage();
-    }, [normalizedPage.id]);
-
-	useEffect(() => {
-		if (isSaved)
-			showToast.success("Page saved successfully!");
-	}, [isSaved]);
-
-	useEffect(() => {
-		let loadingToast;
-		if (isSaving)
-			loadingToast = showToast.loading("Saving page...");
-		else
-			showToast.dismiss(loadingToast);
-	}, [isSaving]);
-
-	useEffect(() => {
-		if (saveError)
-			showToast.error(saveError);
-	}, [saveError]);
-
-	const handleOnChange = async (updatedContent) => {
-		setContent(updatedContent);
-		// Automatically saves 1s after typing stops
-		await savePage({
-			pageId: normalizedPage.id,
-			content: updatedContent,
-		});
-	};
-
-    const handleSave = async () => {
-        setError("");
-        const loadingToast = showToast.loading("Saving page...");
-
-        try {
-            const token = localStorage.getItem("token");
-            const res = await fetch(API_URL + "/api/pages/savepage", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    token,
-                    pageId: normalizedPage.id,
-                    newPageData: content,
-                }),
-            });
-            const data = await res.json();
-
-            showToast.dismiss(loadingToast);
-
-            if (!res.ok) {
-                setError(data.message || "Failed to save page");
-                showToast.error("Failed to save page");
-            } else {
-                showToast.success("Page saved successfully!");
-            }
-        } catch (err) {
-            showToast.dismiss(loadingToast);
-            setError("Failed to save page");
-            showToast.error("Failed to save page");
 export default function PageView({ page, onPageDeleted }) {
   const normalizedPage = normalizePage(page);
   const [content, setContent] = useState('');
@@ -202,8 +109,6 @@ export default function PageView({ page, onPageDeleted }) {
 
       showToast.dismiss(loadingToast);
 
-            const data = await res.json();
-            showToast.dismiss(loadingToast);
       if (!res.ok) {
         setError(data.message || 'Failed to save page');
         showToast.error('Failed to save page');
@@ -232,78 +137,6 @@ export default function PageView({ page, onPageDeleted }) {
         body: JSON.stringify({ token, pageId: normalizedPage.id }),
       });
 
-    return (
-        <Container maxWidth="lg" sx={{ mt: { xs: 2, md: 3 }, mb: 4 }}>
-            <Fade in={true} timeout={600}>
-                <Box>
-                    {/* Header Section */}
-                    <Paper
-                        elevation={0}
-                        sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            mb: 3,
-                            p: { xs: 2, md: 3 },
-                            borderRadius: 2,
-                            background: theme.palette.mode === 'dark'
-                                ? 'rgba(30,30,30,0.6)'
-                                : 'rgba(255,255,255,0.8)',
-                            backdropFilter: 'blur(10px)',
-                            border: `1px solid ${theme.palette.divider}`,
-                        }}
-                    >
-                        <Typography
-                            variant={isMobile ? "h5" : "h4"}
-                            sx={{
-                                flexGrow: 1,
-                                fontWeight: 600,
-                                background: theme.palette.mode === 'dark'
-                                    ? 'linear-gradient(45deg, #90CAF9 30%, #CE93D8 90%)'
-                                    : 'linear-gradient(45deg, #1976D2 30%, #9c27b0 90%)',
-                                WebkitBackgroundClip: 'text',
-                                WebkitTextFillColor: 'transparent',
-                                backgroundClip: 'text'
-                            }}
-                        >
-                            {normalizedPage.name}
-                        </Typography>
-
-                        <Box sx={{ display: 'flex', gap: 1 }}>
-                            <Tooltip title="Delete Page" arrow>
-                                <IconButton
-                                    color="error"
-                                    onClick={handleDelete}
-                                    disabled={loading}
-                                    sx={{
-                                        '&:hover': {
-                                            transform: 'scale(1.1)',
-                                            transition: 'transform 0.2s ease'
-                                        }
-                                    }}
-                                >
-                                    <FaTrashCan />
-                                </IconButton>
-                            </Tooltip>
-
-                            <Tooltip title="Save Page" arrow>
-                                <IconButton
-                                    color="primary"
-                                    onClick={handleSave}
-                                    disabled={loading}
-                                    sx={{
-                                        '&:hover': {
-                                            transform: 'scale(1.1)',
-                                            transition: 'transform 0.2s ease'
-                                        }
-                                    }}
-                                >
-                                    <SaveIcon />
-                                </IconButton>
-                            </Tooltip>
-
-                            <SharePageButton token={token} pageId={normalizedPage.id} />
-                        </Box>
-                    </Paper>
       const data = await res.json();
 
       showToast.dismiss(loadingToast);
@@ -443,36 +276,15 @@ export default function PageView({ page, onPageDeleted }) {
                         onClick={() => setEditing(true)}
                     >
                         {loading ? (
-                            <Box
-                                display="flex"
-                                justifyContent="center"
-                                alignItems="center"
+                            <Box 
+                                display="flex" 
+                                justifyContent="center" 
+                                alignItems="center" 
                                 minHeight="70vh"
                             >
                                 <CircularProgress size={60} thickness={4} />
                             </Box>
                         ) : editing ? (
-                            <textarea
-                                ref={textareaRef}
-                                value={content}
-                                onChange={e => handleOnChange(e.target.value)}
-                                onBlur={() => setEditing(false)}
-                                style={{
-                                    width: "100%",
-                                    minHeight: isMobile ? "70vh" : "75vh",
-                                    border: "none",
-                                    outline: "none",
-                                    background: "transparent",
-                                    fontSize: isMobile ? "16px" : "18px",
-                                    fontFamily: "'Inter', 'Segoe UI', sans-serif",
-                                    resize: "none",
-                                    padding: isMobile ? "20px" : "32px",
-                                    lineHeight: 1.7,
-                                    color: theme.palette.text.primary,
-                                }}
-                                autoFocus
-                                placeholder="Start writing your thoughts..."
-                            />
                             <Box>
                                 <RichMarkdownEditor
                                     content={content}
@@ -482,9 +294,9 @@ export default function PageView({ page, onPageDeleted }) {
                                 />
                             </Box>
                         ) : (
-                            <Box
+                            <Box 
                                 onClick={() => setEditing(true)}
-                                sx={{
+                                sx={{ 
                                     p: { xs: 2.5, md: 4 },
                                     minHeight: { xs: "70vh", md: "75vh" },
                                     cursor: 'text',
@@ -515,9 +327,9 @@ export default function PageView({ page, onPageDeleted }) {
                                 {content ? (
                                     <ReactMarkdown>{content}</ReactMarkdown>
                                 ) : (
-                                    <Typography
-                                        variant="body1"
-                                        sx={{
+                                    <Typography 
+                                        variant="body1" 
+                                        sx={{ 
                                             fontStyle: 'italic',
                                             color: theme.palette.text.secondary,
                                             fontSize: { xs: '16px', md: '18px' }
