@@ -59,10 +59,12 @@ Core features are being built and contributions are welcome.
    ```
 
 3. **Setup .env file**
+
    ```bash
     save a copy of .env.example as ".env" and fill in the variables
 
    ```
+
 4. **Run the backend**
    ```bash
     npm run dev
@@ -79,10 +81,12 @@ Core features are being built and contributions are welcome.
    ```
 
 2. **Edit config.js**
+
    ```bash
     update the API_URL to point to your backend instance
 
    ```
+
 3. **Run the frontend**
    ```bash
     npm start
