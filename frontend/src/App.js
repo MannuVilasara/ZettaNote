@@ -1,5 +1,4 @@
-import { createBrowserRouter } from 'react-router';
-import { RouterProvider } from 'react-router/dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { UIProvider } from './components/ui/provider';
 import { Toaster } from 'react-hot-toast';
 
@@ -7,6 +6,7 @@ import Login from './pages/login';
 import Signup from './pages/signup';
 import Landingpage from './pages/landingpage';
 import Home from './pages/home';
+import PublicShare from './pages/publicShare';
 import { ProtectedRoute, AuthRoute } from './components/ProtectedRoute';
 
 function App() {
@@ -38,6 +38,10 @@ function App() {
           <Home />
         </ProtectedRoute>
       ),
+    },
+    {
+      path: '/share/:shareId',
+      element: <PublicShare />,
     },
   ]);
 

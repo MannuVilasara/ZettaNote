@@ -238,8 +238,8 @@ export default function Navbar() {
             fontWeight: 800,
             background:
               theme.palette.mode === 'dark'
-                ? 'linear-gradient(45deg, #64B5F6 30%, #E1BEE7 90%)'
-                : 'linear-gradient(45deg, #1976D2 30%, #9c27b0 90%)',
+                ? `linear-gradient(45deg, ${theme.palette.primary.light} 30%, ${theme.palette.secondary.light} 90%)`
+                : `linear-gradient(45deg, ${theme.palette.primary.main} 30%, ${theme.palette.secondary.main} 90%)`,
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',

@@ -1,11 +1,12 @@
 import express from 'express';
 
-import createPage from './createPage.js';
-import savePage from './savePage.js';
-import renamePage from './renamePage.js';
-import { getPage, getPages } from './getPages.js';
-import deletePage from './deletePage.js';
-import sharePage from './sharePage.js';
+import createPage from "./createPage.js";
+import savePage from "./savePage.js";
+import renamePage from "./renamePage.js";
+import { getPage, getPages } from "./getPages.js";
+import deletePage from "./deletePage.js";
+import sharePage from "./sharePage.js";
+import { publicShare, getPublicShare } from "./publicShare.js";
 
 const router = express.Router();
 
@@ -49,9 +50,9 @@ router.post('/publicshare', async (req, res) => {
   res.status(resStatus).json(resMessage);
 });
 
-router.get('/share/:shareId', async (req, res) => {
-  const { shareId } = req.params;
-  const { resStatus, resMessage } = await getPublicShare(shareId);
-  res.status(resStatus).send(resMessage);
-});
+router.get("/share/:shareId", async (req,res)=>{
+    const { shareId } = req.params;
+    const { resStatus, resMessage } = await getPublicShare(shareId);
+    res.status(resStatus).json(resMessage);
+})
 export default router;

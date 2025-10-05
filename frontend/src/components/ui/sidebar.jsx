@@ -11,16 +11,18 @@ import {
   useTheme,
   ListItemIcon,
   Skeleton,
+  Button,
 } from '@mui/material';
 import {
   Description as PageIcon,
   Share as SharedIcon,
   Person as PersonIcon,
+  Add as AddIcon,
 } from '@mui/icons-material';
 import { API_URL } from '../../config';
 import { showToast } from '../../utils/toast';
 
-export default function Sidebar({ token, onSelectPage, refreshTrigger }) {
+export default function Sidebar({ token, onSelectPage, refreshTrigger, onNewPage }) {
   const [ownedPages, setOwnedPages] = useState([]);
   const [sharedPages, setSharedPages] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -103,6 +105,31 @@ export default function Sidebar({ token, onSelectPage, refreshTrigger }) {
             />
           </Box>
           <Divider sx={{ mb: 2 }} />
+
+          {/* Create New Page Button */}
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={onNewPage}
+            fullWidth
+            sx={{
+              mb: 2,
+              borderRadius: 2,
+              textTransform: 'none',
+              fontWeight: 600,
+              py: 1,
+              background: theme.palette.primary.main,
+              color: 'white',
+              '&:hover': {
+                background: theme.palette.primary.dark,
+                transform: 'translateY(-1px)',
+                boxShadow: theme.shadows[4],
+              },
+              transition: 'all 0.2s ease',
+            }}
+          >
+            Create New Page
+          </Button>
 
           <List sx={{ py: 0 }}>
             {loading ? (
