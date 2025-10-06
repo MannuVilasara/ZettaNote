@@ -1,0 +1,28 @@
+[Unit]
+Description=ZettaNote Backend Service
+After=network.target mongodb.service
+Wants=mongodb.service
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/zettanote/backend
+Environment="NODE_ENV=production"
+Environment="PORT=5000"
+EnvironmentFile=/opt/zettanote/shared/.env
+ExecStart=/usr/bin/pnpm run prod
+Restart=always
+RestartSec=10
+StandardOutput=append:/var/log/zettanote/backend.log
+StandardError=append:/var/log/zettanote/backend-error.log
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/zettanote/backend
+
+[Install]
+WantedBy=multi-user.target
