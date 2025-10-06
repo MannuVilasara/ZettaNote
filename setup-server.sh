@@ -102,7 +102,7 @@ fi
 
 # Create directory structure
 log_step "Step 8: Creating directory structure"
-mkdir -p /opt/zettanote/{releases,current,backend,shared}
+mkdir -p /opt/zettanote/{releases,current,shared}
 mkdir -p /var/log/zettanote
 log_info "Directories created"
 
@@ -178,13 +178,23 @@ else
     log_info "Please copy deploy.sh manually after cloning the repository"
 fi
 
+# Stop and disable nginx (we'll run frontend on port 80 directly)
+log_step "Step 15: Configuring port 80 for frontend"
+log_info "Stopping Nginx to free up port 80..."
+systemctl stop nginx 2>/dev/null || true
+systemctl disable nginx 2>/dev/null || true
+log_info "Port 80 will be used by frontend service"
+log_warn "If you need Nginx as reverse proxy, edit frontend service to use port 3000"
+
 # Setup firewall (optional)
-log_step "Step 15: Firewall configuration (optional)"
+log_step "Step 16: Firewall configuration (optional)"
 if command -v ufw &> /dev/null; then
     log_info "UFW detected. To configure firewall, run:"
     echo "    sudo ufw allow 22/tcp  # SSH"
     echo "    sudo ufw allow 80/tcp  # HTTP"
     echo "    sudo ufw allow 443/tcp # HTTPS"
+    echo "    sudo ufw allow 3001/tcp # Admin Portal"
+    echo "    sudo ufw allow 5000/tcp # Backend API"
     echo "    sudo ufw enable"
 else
     log_info "UFW not installed. Install with: sudo apt install ufw"

@@ -4,10 +4,10 @@ After=network.target
 
 [Service]
 Type=simple
-User=www-data
-Group=www-data
+User=root
+Group=root
 WorkingDirectory=/opt/zettanote/current/frontend
-ExecStart=/usr/bin/serve -s . -l 3000
+ExecStart=/usr/bin/serve -s . -l 80
 Restart=always
 RestartSec=10
 StandardOutput=append:/var/log/zettanote/frontend.log
@@ -16,8 +16,6 @@ StandardError=append:/var/log/zettanote/frontend-error.log
 # Security settings
 NoNewPrivileges=true
 PrivateTmp=true
-ProtectSystem=strict
-ProtectHome=true
 
 [Install]
 WantedBy=multi-user.target

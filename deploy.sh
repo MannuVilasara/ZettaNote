@@ -9,7 +9,6 @@ set -e  # Exit on any error
 DEPLOY_BASE="/opt/zettanote"
 RELEASE_DIR="${DEPLOY_BASE}/releases/$1"
 CURRENT_DIR="${DEPLOY_BASE}/current"
-BACKEND_DIR="${DEPLOY_BASE}/backend"
 SHARED_DIR="${DEPLOY_BASE}/shared"
 
 # Colors for output
@@ -44,7 +43,7 @@ log_info "Commit SHA: $2"
 log_info "Creating directory structure..."
 mkdir -p "${RELEASE_DIR}"
 mkdir -p "${SHARED_DIR}"
-mkdir -p "${BACKEND_DIR}"
+mkdir -p "${CURRENT_DIR}"
 
 # Verify artifacts exist
 log_info "Checking for artifacts..."
