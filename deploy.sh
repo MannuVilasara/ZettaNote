@@ -97,6 +97,7 @@ log_info "Setting proper ownership..."
 chown -R www-data:www-data "${RELEASE_DIR}"
 chown -R www-data:www-data "${CURRENT_DIR}"
 
+cd "${CURRENT_DIR}"/backend && npm install --production
 # Restart services
 log_info "Restarting services..."
 

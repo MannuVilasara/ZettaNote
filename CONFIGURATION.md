@@ -7,14 +7,17 @@
 **File:** `systemd/zettanote-frontend.service`
 
 **Changed from:**
+
 - Port: 3000 (requires Nginx reverse proxy)
 - User: www-data
 
 **Changed to:**
+
 - Port: 80 (direct access, no Nginx needed)
 - User: root (required for ports < 1024)
 
 **Benefits:**
+
 - ✅ No Nginx required for basic setup
 - ✅ Direct access on standard HTTP port
 - ✅ Simpler architecture for small deployments
@@ -25,16 +28,19 @@
 **File:** `deploy.sh` & `.github/workflows/deploy.yml`
 
 **Changed from:**
+
 - Clone backend from Git on server
 - Run `pnpm install` on server
 - Git ownership issues
 
 **Changed to:**
+
 - Backend uploaded as pre-built artifact
 - Dependencies already installed in artifact
 - No Git operations on server
 
 **Benefits:**
+
 - ✅ No Git ownership issues
 - ✅ Faster deployments
 - ✅ Consistent with frontend/admin-portal approach
@@ -45,6 +51,7 @@
 **File:** `setup-server.sh`
 
 **New behavior:**
+
 - Stops and disables Nginx (frees port 80)
 - Removes backend directory creation (comes as artifact)
 - Updated firewall rules to include backend API port
@@ -125,6 +132,7 @@ If you want to add Nginx for SSL/reverse proxy later:
 3. **Add SSL** with Let's Encrypt
 
 Edit `/etc/systemd/system/zettanote-frontend.service`:
+
 ```ini
 [Service]
 User=www-data
@@ -133,6 +141,7 @@ ExecStart=/usr/bin/serve -s . -l 3000
 ```
 
 Then reload and restart:
+
 ```bash
 sudo systemctl daemon-reload
 sudo systemctl restart zettanote-frontend
@@ -237,6 +246,7 @@ ls -la /opt/zettanote/current/frontend/
 ### Alternative: Use Port 3000 + Nginx
 
 For production, consider:
+
 - Frontend on port 3000 (as www-data)
 - Nginx on port 80/443 (as root)
 - SSL/TLS termination at Nginx
@@ -258,10 +268,10 @@ sudo rm -rf /opt/zettanote/backend
 
 ## Quick Reference
 
-| Component | Port | User | Service File |
-|-----------|------|------|--------------|
-| Frontend | 80 | root | zettanote-frontend.service |
-| Admin Portal | 3001 | www-data | zettanote-admin.service |
-| Backend API | 5000 | www-data | zettanote-backend.service |
+| Component    | Port | User     | Service File               |
+| ------------ | ---- | -------- | -------------------------- |
+| Frontend     | 80   | root     | zettanote-frontend.service |
+| Admin Portal | 3001 | www-data | zettanote-admin.service    |
+| Backend API  | 5000 | www-data | zettanote-backend.service  |
 
 All components deployed as artifacts from GitHub Actions! 🚀
