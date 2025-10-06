@@ -97,7 +97,18 @@ log_info "Setting proper ownership..."
 chown -R www-data:www-data "${RELEASE_DIR}"
 chown -R www-data:www-data "${CURRENT_DIR}"
 
-cd "${CURRENT_DIR}"/backend && npm install --production
+# Install/update backend dependencies on server
+log_info "Installing backend dependencies on server..."
+cd "${CURRENT_DIR}/backend"
+if command -v pnpm &> /dev/null; then
+    log_info "Using pnpm for dependency installation..."
+    pnpm install --production
+else
+    log_info "Using npm for dependency installation..."
+    npm install --production
+fi
+log_info "Backend dependencies installed successfully"
+
 # Restart services
 log_info "Restarting services..."
 
