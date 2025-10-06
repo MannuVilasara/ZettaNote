@@ -14,7 +14,7 @@ app.use(express.json());
 
 // CORS configuration - allows your frontend domains
 const corsOptions = {
-  origin: process.env.CORS_ORIGINS 
+  origin: process.env.CORS_ORIGINS
     ? process.env.CORS_ORIGINS.split(',')
     : [
         'http://localhost:3000',
@@ -23,7 +23,7 @@ const corsOptions = {
         // CORS_ORIGINS=https://app.yourdomain.com,https://admin.yourdomain.com
       ],
   credentials: true,
-  optionsSuccessStatus: 200
+  optionsSuccessStatus: 200,
 };
 
 app.use(cors(corsOptions));
