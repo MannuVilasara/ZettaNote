@@ -59,7 +59,12 @@ if [ ! -d "${RELEASE_DIR}/admin-portal" ]; then
     exit 1
 fi
 
-log_info "Artifacts found successfully"
+if [ ! -d "${RELEASE_DIR}/backend" ]; then
+    log_error "Backend artifacts not found in ${RELEASE_DIR}/backend"
+    exit 1
+fi
+
+log_info "All artifacts found successfully"
 
 # Create symbolic links to new release
 log_info "Updating symbolic links..."
@@ -78,23 +83,20 @@ log_info "Frontend symlink updated"
 ln -snf "${RELEASE_DIR}/admin-portal" "${CURRENT_DIR}/admin-portal"
 log_info "Admin portal symlink updated"
 
-# Deploy backend (pull latest code)
-log_info "Deploying backend..."
-cd "${BACKEND_DIR}"
+# Update backend symlink
+ln -snf "${RELEASE_DIR}/backend" "${CURRENT_DIR}/backend"
+log_info "Backend symlink updated"
 
-# If backend directory is empty, clone the repository
-if [ ! -d ".git" ]; then
-    log_info "Cloning backend repository..."
-    git clone --branch ${BRANCH:-main} https://github.com/MannuVilasara/ZettaNote .
+# Copy environment file to backend if it doesn't exist in release
+if [ ! -f "${RELEASE_DIR}/backend/.env" ] && [ -f "${SHARED_DIR}/.env" ]; then
+    log_info "Copying environment file to backend..."
+    cp "${SHARED_DIR}/.env" "${RELEASE_DIR}/backend/.env"
 fi
 
-# Pull latest changes
-git fetch origin
-git reset --hard origin/${BRANCH:-main}
-
-# Install dependencies
-log_info "Installing backend dependencies..."
-pnpm install --production
+# Set proper ownership for all artifacts
+log_info "Setting proper ownership..."
+chown -R www-data:www-data "${RELEASE_DIR}"
+chown -R www-data:www-data "${CURRENT_DIR}"
 
 # Restart services
 log_info "Restarting services..."

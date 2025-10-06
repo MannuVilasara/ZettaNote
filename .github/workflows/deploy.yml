@@ -70,8 +70,35 @@ jobs:
                   path: admin-portal/build/
                   retention-days: 7
 
+    prepare-backend:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "20"
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: 8
+
+            - name: Install backend dependencies
+              working-directory: ./backend
+              run: pnpm install --production
+
+            - name: Upload backend artifact
+              uses: actions/upload-artifact@v4
+              with:
+                  name: backend-build
+                  path: backend/
+                  retention-days: 7
+
     deploy:
-        needs: [build-frontend, build-admin-portal]
+        needs: [build-frontend, build-admin-portal, prepare-backend]
         runs-on: ubuntu-latest
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
         steps:
@@ -86,6 +113,12 @@ jobs:
               with:
                   name: admin-portal-build
                   path: ./artifacts/admin-portal
+
+            - name: Download backend artifact
+              uses: actions/download-artifact@v4
+              with:
+                  name: backend-build
+                  path: ./artifacts/backend
 
             - name: Upload artifacts to server
               uses: appleboy/scp-action@v0.1.7
