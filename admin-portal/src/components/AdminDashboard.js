@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Box,
   Container,
@@ -12,7 +12,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
   Chip,
   Button,
   TextField,
@@ -43,11 +42,7 @@ export default function AdminDashboard() {
   const [error, setError] = useState('');
   const [actionLoading, setActionLoading] = useState({});
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
     try {
       await Promise.all([fetchAnalytics(), fetchUsers()]);
@@ -56,7 +51,12 @@ export default function AdminDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const fetchAnalytics = async () => {
     try {

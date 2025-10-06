@@ -46,9 +46,3 @@ jobs:
               echo "Build output is invalid."
               exit 1
           fi
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: frontend-build
-          path: frontend/build

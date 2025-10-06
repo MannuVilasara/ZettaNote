@@ -92,7 +92,7 @@ cd "${BACKEND_DIR}"
 # If backend directory is empty, clone the repository
 if [ ! -d ".git" ]; then
     log_info "Cloning backend repository..."
-    git clone --branch ${BRANCH:-main} <YOUR_REPO_URL> .
+    git clone --branch ${BRANCH:-main} https://github.com/MannuVilasara/ZettaNote .
 fi
 
 # Pull latest changes
