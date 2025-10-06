@@ -17,6 +17,7 @@ const corsOptions = {
   origin: process.env.CORS_ORIGINS
     ? process.env.CORS_ORIGINS.split(',')
     : [
+        'http://localhost:80',
         'http://localhost:3000',
         'http://localhost:3001',
         // Add your production domains in Coolify environment variables
