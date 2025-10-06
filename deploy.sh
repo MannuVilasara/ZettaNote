@@ -46,15 +46,8 @@ mkdir -p "${RELEASE_DIR}"
 mkdir -p "${SHARED_DIR}"
 mkdir -p "${BACKEND_DIR}"
 
-# Wait for artifacts to be uploaded
-log_info "Waiting for artifacts..."
-sleep 5
-
-# Check if artifacts exist
-if [ ! -d "${RELEASE_DIR}/frontend" ] || [ ! -d "${RELEASE_DIR}/admin-portal" ]; then
-    log_warn "Artifacts not found yet, waiting longer..."
-    sleep 10
-fi
+# Verify artifacts exist
+log_info "Checking for artifacts..."
 
 if [ ! -d "${RELEASE_DIR}/frontend" ]; then
     log_error "Frontend artifacts not found in ${RELEASE_DIR}/frontend"
